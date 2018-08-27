@@ -15,11 +15,11 @@ class UiForm(QObject):
         self.executable_file = QLineEdit()
         self.executable_file.setPlaceholderText(self.tr("输入可执行文件路径或直接拖入"))  # 注意处理拖入多个文件的情况
 
-        self.icon = QLineEdit()
-        self.icon.setPlaceholderText(self.tr("可选"))
-
         self.name = QLineEdit()
         self.name.setPlaceholderText(self.tr("应用名称"))
+
+        self.icon = QLineEdit()
+        self.icon.setPlaceholderText(self.tr("可选"))
 
         self.layout_form.addRow(self.tr("程序"), self.executable_file)
         self.layout_form.addRow(self.tr("图标"), self.icon)

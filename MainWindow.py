@@ -23,7 +23,11 @@ class MainWindow(QWidget):
         name = self.ui.name.text()
 
         print(executable_file, icon)
-        desktop = os.path.expanduser("~/Desktop/test.desktop")
+        try:
+            os.mkdir("/tmp/entry-creator/")
+        except PermissionError:
+            pass
+        desktop = os.path.expanduser("/tmp/entry-creator/%s.desktop" % name)
         f = open(desktop, "w")
         f.write("[Desktop Entry]\n"
                 "Version=1.0\n"
@@ -45,6 +49,8 @@ class MainWindow(QWidget):
         text = line_edit.text()
         if re.match("file://", text):
             line_edit.setText(text[7:])
+        name = os.path.basename(text)
+        self.ui.name.setText(name)
 
     @pyqtSlot()
     def on_icon_changed(self):
