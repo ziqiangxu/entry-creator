@@ -1,0 +1,63 @@
+from PyQt5.QtWidgets import QWidget
+from PyQt5.QtCore import pyqtSlot
+from MainWindowTemplate import UiForm
+import os
+import re
+
+
+class MainWindow(QWidget):
+    def __init__(self):
+        super(MainWindow, self).__init__()
+        self.ui = UiForm(self)
+        self.signal_slot()
+
+    def signal_slot(self):
+        self.ui.generate.clicked.connect(self.on_generate_clicked)
+        self.ui.executable_file.textChanged.connect(self.on_executable_file_changed)
+        self.ui.icon.textChanged.connect(self.on_icon_changed)
+
+    @pyqtSlot()
+    def on_generate_clicked(self):
+        executable_file = self.ui.executable_file.text()
+        icon = self.ui.icon.text()
+        name = self.ui.name.text()
+
+        print(executable_file, icon)
+        desktop = os.path.expanduser("~/Desktop/test.desktop")
+        f = open(desktop, "w")
+        f.write("[Desktop Entry]\n"
+                "Version=1.0\n"
+                # "Categories=Dictionary;Application;Utility;\n"
+                # "Comment=Nothing\n"
+                "Encoding=UTF-8\n"
+                "Exec=%s\n"
+                "Icon=%s\n"
+                "Name=%s\n"
+                "StartupNotify=true\n"
+                "Terminal=false\n"
+                "Type=Application"
+                % (executable_file, icon, name))
+        f.close()
+
+    @pyqtSlot()
+    def on_executable_file_changed(self):
+        line_edit = self.ui.executable_file
+        text = line_edit.text()
+        if re.match("file://", text):
+            line_edit.setText(text[7:])
+
+    @pyqtSlot()
+    def on_icon_changed(self):
+        line_edit = self.ui.icon
+        text = line_edit.text()
+        if re.match("file://", text):
+            line_edit.setText(text[7:])
+
+
+if __name__ == '__main__':
+    import sys
+    from PyQt5.QtWidgets import QApplication
+    app = QApplication(sys.argv)
+    w = MainWindow()
+    w.show()
+    app.exec_()
