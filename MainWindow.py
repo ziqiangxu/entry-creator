@@ -1,5 +1,4 @@
-from PyQt5.QtWidgets import QWidget
-from PyQt5.QtCore import pyqtSlot
+from PyQt5.QtWidgets import QWidget, QMessageBox
 from MainWindowTemplate import UiForm
 import os
 import re
@@ -16,7 +15,7 @@ class MainWindow(QWidget):
         self.ui.executable_file.textChanged.connect(self.on_executable_file_changed)
         self.ui.icon.textChanged.connect(self.on_icon_changed)
 
-    @pyqtSlot()
+    # slot
     def on_generate_clicked(self):
         executable_file = self.ui.executable_file.text()
         icon = self.ui.icon.text()
@@ -25,7 +24,7 @@ class MainWindow(QWidget):
         print(executable_file, icon)
         try:
             os.mkdir("/tmp/entry-creator/")
-        except PermissionError:
+        except FileExistsError:
             pass
         desktop = os.path.expanduser("/tmp/entry-creator/%s.desktop" % name)
         f = open(desktop, "w")
@@ -42,8 +41,15 @@ class MainWindow(QWidget):
                 "Type=Application"
                 % (executable_file, icon, name))
         f.close()
+        if executable_file is "" or name is "":
+            QMessageBox.warning(self, self.tr("警告"), self.tr("输入的数据不完整"),
+                                QMessageBox.Ok, QMessageBox.Ok)
+            return
+        pwd = os.getcwd()
+        sh = os.path.join(pwd, "move_desktop.sh")
+        os.system("pkexec /bin/bash -x %s" % sh)
 
-    @pyqtSlot()
+    # slot
     def on_executable_file_changed(self):
         line_edit = self.ui.executable_file
         text = line_edit.text()
@@ -52,7 +58,7 @@ class MainWindow(QWidget):
         name = os.path.basename(text)
         self.ui.name.setText(name)
 
-    @pyqtSlot()
+    # slot
     def on_icon_changed(self):
         line_edit = self.ui.icon
         text = line_edit.text()
