@@ -1,3 +1,4 @@
+# -*- coding:utf-8 -*-
 from PyQt5.QtWidgets import QFormLayout, QWidget, QLineEdit, QVBoxLayout, QPushButton
 from PyQt5.QtCore import QObject
 
