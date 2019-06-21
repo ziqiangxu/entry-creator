@@ -7,7 +7,6 @@ verify_ssl = true
 
 [packages]
 pyside2 = "*"
-dbus-python = "*"
 
 [requires]
 python_version = "3.6"
