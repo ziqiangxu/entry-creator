@@ -1,8 +1,10 @@
+#!/usr/bin/python3
 # -*- coding:utf-8 -*-
-from PyQt5.QtWidgets import QWidget, QMessageBox
-from MainWindowTemplate import UiForm
 import os
 import re
+
+from PySide2.QtWidgets import QFormLayout, QWidget, QLineEdit, QVBoxLayout, QPushButton, QMessageBox, QHBoxLayout
+from PySide2.QtCore import QObject
 
 
 class MainWindow(QWidget):
@@ -47,8 +49,9 @@ class MainWindow(QWidget):
                                 QMessageBox.Ok, QMessageBox.Ok)
             return
         pwd = os.getcwd()
-        sh = os.path.join(pwd, "move_desktop.sh")
-        os.system("pkexec /bin/bash -x %s" % sh)
+        # sh = os.path.join(pwd, "move_desktop.sh")
+        # os.system("pkexec /bin/bash -x %s" % sh)
+        os.system("pkexec --user root mv /tmp/entry-creator/*.desktop /usr/share/applications/")
 
     # slot
     def on_executable_file_changed(self):
@@ -67,9 +70,36 @@ class MainWindow(QWidget):
             line_edit.setText(text[7:])
 
 
+class UiForm(QObject):
+    def __init__(self, parent=QWidget):
+        super(UiForm, self).__init__(parent)
+        parent.setWindowTitle(self.tr("Desktop文件生成器"))
+        parent.setFixedSize(300, 500)
+
+        self.layout_root = QVBoxLayout(parent)
+        self.layout_form = QFormLayout()
+        self.layout_root.addLayout(self.layout_form)
+
+        self.executable_file = QLineEdit()
+        self.executable_file.setPlaceholderText(self.tr("输入可执行文件路径或直接拖入"))  # 注意处理拖入多个文件的情况
+
+        self.name = QLineEdit()
+        self.name.setPlaceholderText(self.tr("应用名称"))
+
+        self.icon = QLineEdit()
+        self.icon.setPlaceholderText(self.tr("可选"))
+
+        self.layout_form.addRow(self.tr("程序"), self.executable_file)
+        self.layout_form.addRow(self.tr("图标"), self.icon)
+        self.layout_form.addRow(self.tr("名称"), self.name)
+
+        self.generate = QPushButton(self.tr("生成"))
+        self.layout_root.addWidget(self.generate)
+
+
 if __name__ == '__main__':
     import sys
-    from PyQt5.QtWidgets import QApplication
+    from PySide2.QtWidgets import QApplication
     app = QApplication(sys.argv)
     w = MainWindow()
     w.show()
