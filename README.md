@@ -1,5 +1,7 @@
 # entry-creator
 
+> 本项目不再继续开发，推荐使用 https://github.com/faheel/desktop-entry-creator
+
 用于快捷创建 `Linux Desktop` 文件，本应用基于 `Python3` 开发，使用 `Qt` 作为图形库。
 
 ## 通过源代码运行
